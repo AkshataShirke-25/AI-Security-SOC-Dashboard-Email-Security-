@@ -1,0 +1,1 @@
+"Folder for Defender and Wazuh documentation."
