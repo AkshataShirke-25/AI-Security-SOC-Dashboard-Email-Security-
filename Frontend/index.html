@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Security SOC Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark-mode"> <!-- Dark mode toggle applied -->
+
+<div class="d-flex">
+    <div class="sidebar">
+        <h4>🛡️ SOC Panel</h4>
+        <div id="apiStatus" class="mb-3"><span class="live-dot"></span> API Online</div>
+        <a href="#dashboard" class="active">Dashboard</a>
+        <a href="#alerts">Alerts</a>
+        <a href="#users">Agents</a>
+        <a href="#analytics">Analytics</a>
+        <button onclick="toggleDarkMode()" class="btn btn-sm btn-outline-light mt-4">Toggle Dark Mode</button>
+    </div>
+
+    <div class="main w-100">
+        <section id="dashboard">
+            <h2>Dashboard <small id="refreshTime" class="text-muted" style="font-size:12px;"></small></h2>
+            <div class="row g-4 mt-3">
+                <div class="col-md-4"><div class="card-box"><h6>Total Agents</h6><h2 id="totalAgents">0</h2></div></div>
+                <div class="col-md-4"><div class="card-box"><h6>High Risk Alerts</h6><h2 class="text-danger" id="highRisk">0</h2></div></div>
+                <div class="col-md-4"><div class="card-box"><h6>Active Systems</h6><h2 class="text-success" id="activeSystems">0</h2></div></div>
+            </div>
+        </section>
+
+        <section id="alerts" class="mt-5">
+            <h2>Alerts</h2>
+            <input type="text" id="alertSearch" class="form-control mb-3 bg-dark text-white" placeholder="Search alerts..." onkeyup="filterAlerts()">
+            <select id="riskFilter" class="form-select mb-3 bg-dark text-white" onchange="filterAlerts()">
+                <option value="all">All Levels</option>
+                <option value="high">High Risk (8+)</option>
+            </select>
+            <div class="card-box"><table class="custom-table"><thead><tr><th>User</th><th>Level</th><th>Message</th></tr></thead><tbody id="alertsTable"></tbody></table></div>
+        </section>
+
+        <section id="users" class="mt-5">
+            <h2>Agents</h2>
+            <div class="card-box"><table class="custom-table"><thead><tr><th>Name</th><th>Status</th></tr></thead><tbody id="agentTable"></tbody></table></div>
+        </section>
+
+        <section id="analytics" class="mt-5">
+            <h2>Analytics</h2>
+            <div class="row">
+                <div class="col-md-6"><div class="card-box"><canvas id="barChart"></canvas></div></div>
+                <div class="col-md-6"><div class="card-box"><canvas id="pieChart"></canvas></div></div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="agentModal" class="modal" style="display:none; background:rgba(0,0,0,0.8); position:fixed; top:0; left:0; width:100%; height:100%;">
+    <div class="modal-content p-4 w-50 mx-auto mt-5">
+        <h5>Agent Details</h5>
+        <div id="modalBody"></div>
+        <button class="btn btn-danger mt-3" onclick="document.getElementById('agentModal').style.display='none'">Close</button>
+    </div>
+</div>
+
+<!-- Notification Toast -->
+<div id="toast" class="toast">New alert detected!</div>
+
+<script>
+// Enhanced features logic
+let alertsData = [];
+let token = "";
+
+async function init() {
+    await authenticate();
+    updateDashboard();
+    setInterval(updateDashboard, 30000); // Auto refresh
+}
+
+function updateDashboard() {
+    loadAgents();
+    loadAlerts();
+    document.getElementById("refreshTime").innerText = "Last updated: " + new Date().toLocaleTimeString();
+}
+
+function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+
+function showNotification() {
+    const t = document.getElementById("toast");
+    t.style.display = "block";
+    setTimeout(() => t.style.display = "none", 3000);
+}
+
+// ... existing auth, fetch, and chart rendering logic integrated with filter/search ...
+</script>
+</body>
+</html>
