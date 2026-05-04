@@ -29,6 +29,33 @@ When a **High Risk** score is detected:
 * **Automated Playbook:** The dashboard suggests actions like "Reset User Password" or "Isolate Device" to stop the attack immediately.
 
 ---
+## 🏗️ Backend Technology Stack
+To support the SOC Lifecycle mentioned above, our infrastructure utilizes a resilient, industry-standard backend:
+
+Core SIEM Platform: Wazuh (Open Source) – Our primary engine for agent management and security log processing.
+
+Operating System: Ubuntu 22.04 LTS (Linux) – Deployed via Virtual Machine on a Windows host to provide a stable Linux environment for the manager.
+
+Indexing & Search: OpenSearch – A powerful distributed search and analytics engine used to index security events and provide real-time data retrieval for the dashboard.
+
+Integration Interface: Wazuh RESTful API – Provides the gateway for Frontend and AI Chatbot integration.
+
+Data Format: JSON – Standardized format for all log transmission and API responses.
+
+Communication Security: SSL/TLS Certificates – Ensures encrypted communication between the manager and all agents.
+
+Scripting & Automation: Python – Utilized for custom alerting rules and AI-integration logic.
+
+Authentication: authd – Dedicated Wazuh service for secure remote agent enrollment.
+
+## 📊 Current System Status
+Manager IP: 192.168.0.101 (Active/Infrastructure Verified)  
+
+Enrollment Status: Initial Agent Handshake verified with Agent 001 (Daivata_PC).  
+
+Configuration: ossec.conf optimized for Syscheck and Rootcheck.
+
+
 
 ## 📅 Project Roadmap (1 Month)
 * **Week 1:** Research & Environment Setup (E5 Sandbox & GitHub).
