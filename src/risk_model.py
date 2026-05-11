@@ -1,18 +1,22 @@
 import pandas as pd
 from sklearn.ensemble import IsolationForest
+from realtime_data import generate_logs
 
-def process_logs(file_path):
-    data = pd.read_csv(file_path)
+def process_logs(file_path=None):
+
+    # 🔥 REAL-TIME GENERATED DATA
+    data = generate_logs()
 
     # Convert time
     data['time'] = pd.to_datetime(data['time'])
     data['hour'] = data['time'].dt.hour
 
-    # 🔥 UPDATED RISK FUNCTION
+    # 🔥 ADVANCED RISK SCORING
     def calculate_risk(row):
+
         score = 0
 
-        # Failed login
+        # Failed login risk
         score += row['failed_login'] * 10
 
         # Attachments risk
@@ -22,7 +26,7 @@ def process_logs(file_path):
         if "unknown" in row['sender'] or "spam" in row['sender']:
             score += 30
 
-        # Domain check (extra security logic)
+        # Domain validation
         if not row['sender'].endswith("@gmail.com"):
             score += 10
 
@@ -32,20 +36,30 @@ def process_logs(file_path):
 
         return min(score, 100)
 
-    # Apply risk scoring
+    # Apply risk score
     data['risk_score'] = data.apply(calculate_risk, axis=1)
 
-    # AI anomaly detection
+    # 🔥 AI ANOMALY DETECTION
     model = IsolationForest(contamination=0.3)
-    data['anomaly'] = model.fit_predict(data[['failed_login', 'attachments']])
-    data['anomaly'] = data['anomaly'].map({1: "Normal", -1: "Suspicious"})
 
-    # Risk level classification
+    data['anomaly'] = model.fit_predict(
+        data[['failed_login', 'attachments']]
+    )
+
+    data['anomaly'] = data['anomaly'].map({
+        1: "Normal",
+        -1: "Suspicious"
+    })
+
+    # Risk classification
     def risk_level(score):
+
         if score > 70:
             return "HIGH"
+
         elif score > 40:
             return "MEDIUM"
+
         return "LOW"
 
     data['risk_level'] = data['risk_score'].apply(risk_level)
